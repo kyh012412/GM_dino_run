@@ -128,4 +128,92 @@ https://www.youtube.com/playlist?list=PLO-mt5Iu5TeaMl--ItJ2so8BitO_BfTIz
 2. Player collider offset y값을 > 0.4로 변경
 3. Assets/Animation/Run.asset의 loop time을 체크
 
+### 공룡 런게임 - 🏜️무한 배경을 위한 스크롤링 & 패럴랙스 [V03]
+
+#### 배경 구성
+
+1. 기존에 만들어둔 땅
+   1. 스프라이트는 비활성화
+   2. 이름 Floor
+2. 빈 게임 오브젝트를 만들어준다.(Sky Group)
+   1. 위치 초기화
+   2. 복제하여 총 4개가 되도록 생성(Sky, Cloud, Mountain, Ground)
+3. 각자에 해당하는 오브젝트를 채워넣어준다.
+   1. Mountain > Back A를
+   2. Ground는 y값 -3
+   3. sky Renderer 밑의 order in layer 값을 -3
+   4. cloud -2 , y값 2
+   5. back -1
+
+#### 무한 배경
+
+1. ground 오브젝트 내에서 script machine(macro) 생성
+2. 노드 추가
+   1. get pos 검색으로
+   2. transform : get position을 가져옴
+3. 노드 추가
+   1. get x 검색으로
+   2. Vector3 : get x를 가져옴
+   3. ![[Pasted image 20240727140020.png]]
+4. 우클릭하여 Logic 이라는 카테고리이용
+   1. ![[Pasted image 20240727140104.png]]
+5. log > less
+   1. ![[Pasted image 20240727140244.png]]
+6. control > branch (if)
+   1. ![[Pasted image 20240727140501.png]]
+7. get local pos
+   1. ![[Pasted image 20240727140542.png]]
+8. Vector3
+   1. literal
+   2. ![[Pasted image 20240727140633.png]]
+9. Math 카테고리 Vector3 > Add
+   1. ![[Pasted image 20240727140720.png]]
+10. Set local pos
+    1. ![[Pasted image 20240727141026.png]]
+11. 전체 흐름 1
+    1. ![[Pasted image 20240727141119.png]]
+12. 전체 흐름 2
+    1. ![[Pasted image 20240727141131.png]]
+13. 테스트
+    1. 자식 객체들에 적용을 하지만
+    2. 움직이는 것은 Group이 움직임
+    3. 여기까지 정상이면 다른 자식 객체들에도 동일한 Reposition을 적용
+14. ground를 7번복사하여 8개 까지 만들어줌(group x ground o)
+    1. sky도 동일
+15. 산의 경우는 (back) 2개를 더 추가해주고 Back B로 변경 후 적당히 배치
+    1. 구름도 동일
+16. 모든 그룹을 x값을 -9해준다.
+    1. 스카이 그룹은 y값 -1해준다.
+
+#### 스크롤링
+
+1. 배경 그룹 오브젝트에 스크립트 머신과 메크로 추가 (Scrolling)
+2. Transform.translate라는 노드를 추가해준다.
+3. 델타 타임도 고려해준다.
+4. Math Scalar > Multiply 유닛 추가
+5. ![[Pasted image 20240727164233.png]]
+6. 하늘을 제외한 다른 그룹쪽에도 적용해준다.
+7. 테스트
+   1. 문제
+      1. 원근감이 고려되지 않아서 산과 구름이 등속도로 이동중
+
+#### 패럴랙스
+
+1. 볼트(Visual scripting)을 사용하면 자동으로 Scene Variables 가 포함됨
+2. script machine을 쓰면 동시에 Varialbes 라는 컴포넌트도 사용됨 (기능을 지원)
+3. ~~window > variables 이 있음~~
+4. ![[Pasted image 20240727165739.png]]
+5. Script Graph 내에서 \<x> 버튼을 눌러서 blackboard를열고 여기에서 작업을하면된다.
+6. Scene 단위에서 쓸 변수 Speed 를 만들어주고 float -1
+7. Script Graph 내에서 Variables > Scene > get Speed
+   1. ![[Pasted image 20240727170055.png]]
+8. 3개의 그룹이 같은 Scrolling을 쓰고있으므로
+9. 클라우드그룹에서
+10. Macro(graph) 옆에 convert를 눌러서 변환을 해준다.
+11. 연결을 끈고 중간다리로
+    1. math > scalar > multiply를 연결해준다.
+    2. ![[Pasted image 20240727170346.png]]
+12. 마운틴 그룹은 동일하지만 스피드를 0.1을 준다.
+13. _패럴랙스 : 거리에 따라 속도를 달리하여 원근감을 주는 기술_
+
 ###
