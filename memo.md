@@ -427,4 +427,143 @@ https://www.youtube.com/playlist?list=PLO-mt5Iu5TeaMl--ItJ2so8BitO_BfTIz
     4. State Machine으로 돌아와서
 20. 돌아가는 transition 만들어준뒤 6. 돌아가는 event 내에서 7. Events > Animation > Named Anim Event 추가 8. ![[Pasted image 20240728143831.png]] 9.
 
-###
+### 공룡 런게임 - 게임 완성하기 [V06]
+
+#### 게임오버 이벤트
+
+1. Player Script graph 내에서
+2. on Tirigger Enter 2d를 수정
+3. ![[Pasted image 20240728190047.png]]
+4. (위에 바닥 착지시 발생하는 로직을 복사해서 일부만 수정하는쪽이 편함)
+5. unit을 오른클릭후 replace로 교체할수 있다.
+6. rigidbody 2d > set simulated 유닛 추가
+7. ![[Pasted image 20240728190546.png]]
+8. 이렇게 연결시 더이상 rigidbody가 동작하지 않음
+9. Scene 단계 bool 변수 추가 (Live)
+   1. 기본값 true
+10. ![[Pasted image 20240728190836.png]]
+11. Jump 로직도 live가 true일때만 가능하게 수정
+12. ![[Pasted image 20240728190942.png]]
+13. GameManager에서도
+14. live가 true일때 로직 수행
+    1. ![[Pasted image 20240728191144.png]]
+15. macros 폴더내 Scrolling에도 동일
+16. ![[Pasted image 20240728191341.png]]
+17. 테스트
+    1. 정상
+
+#### 게임 재시작
+
+1. 캔버스내에 GameOver 빈객체 추가
+2. GameOver 내에 Image추가
+   1. 이미지소스 UI Over
+   2. set native size
+   3. 이미지가 반만보이는문제
+   4. Canvas 객체의 Canvas 컴포넌트내에 Order in layer 가 있다. > 10
+   5. posy 55
+3. GameOver 내에서 Button 추가
+   1. 버튼내 텍스트 제거
+   2. 이미지 소스 UI Btn On
+   3. set native size
+   4. pos y -70
+   5. button 컴포넌트 내에서
+      1. Transition 값이 Color Tint 인데
+      2. > Sprite Swap으로 변경
+      3. Pressed 와 Selected 는 UI Btn Down 으로 변경
+   6. 이하에 On Click에 추가를 해주고
+      1. 객체에는 GameManager를 드래그해서 등록
+      2. 함수 설정에서 Script Machine > TriggerUnityEvent
+      3. 함수이름을 Reset으로지어준다.
+4. Game Manager의 Script Machine으로 와서
+5. 유닛추가
+   1. Events > UnityEvent 를 추가해주고
+   2. 내부에 Reset(string)을 넣어준다.
+6. GameManger(객체) 내에 오디오 소스를 추가해준다.
+   1. clip은 Button이라는 클립을 넣어준다.
+   2. play on awake 체크 해제
+   3. 볼륨 0.4
+7. SceneManager loadScene 유닛 추가
+   1. 파라미터네 SceneName(string) 인 매개변수 한개만 있는것으로
+8. 만약에 이렇게 연결한다면
+   1. ![[Pasted image 20240728200048.png]]
+   2. 소리는 나지않음 (거의 동시에 발생하기에)
+   3. 딜레이가 필요
+9. Timer 유닛 추가
+   1. duration에 딜레이 원하는만큼의 숫자(seconds)를 적어준다.
+10. LoadScene하기전에
+    1. file>settings 에서
+    2. add opens scene를 통해 scene를 추가해줘야한다.
+11. GameOver 오브젝트는 비활성화
+12. GameManager의 script machine에서
+    1. ctrl + 드래그로 그룹을만들어줄수있다.
+    2. ![[Pasted image 20240728200812.png]]
+    3. 이름을 Scoring으로 변경
+    4. Object 단위의 변수를 추가해준다.
+       1. GameOverUI
+       2. type 은 GameObject
+       3. GameOver(객체)를 드래그해서 넣어준다.
+    5. GameObject set active 유닛을추가해주고
+    6. 연결
+13. GameManager내에서 Live가 false일때 UI를 켜기
+    1. ![[Pasted image 20240728201343.png]]
+    2. 이렇게하면 매초 60번의 콜을 받게 되니 비효율적
+14. Control > Once 유닛을추가해준다.
+    1. ![[Pasted image 20240728201613.png]]
+15. 테스트
+    1. 정상
+
+#### 하이 스코어
+
+1. Score Text를 ctrl D를 써서 복사(HiScore Text)
+   1. 위치를 좌측으로 드래그
+   2. 색상 0f6ed4
+   3. script machine을 삭제
+   4. 새로운 script machine
+   5. 임베드로 제작
+   6. high score 변수를 saved에서 만듬 (int)
+   7. 여기서 만든 데이터는 저장이됨
+   8. ![[Pasted image 20240728204031.png]]
+2. GameManager에서 최고스코어 갱신로직
+   1. Scene내의 Score와
+   2. Saved 내의 HiScore를 가져오고
+   3. 비교를위해
+   4. Logic > greater를 선택
+   5. GameOver UI 이후에 이어서
+   6. ![[Pasted image 20240728204533.png]]
+3. Saved 변수 만드는 것에 대한 지식
+   1. Initial 이 있고 Saved 가 있는데
+   2. Initial는 초기값 Saved는 저장된 값이다.
+4. 테스트
+   1. 정상
+
+#### 레벨 디자인
+
+1. 레벨 디자인은 복잡할 수 있기에 그래프가 아닌 스크립트에서 조작
+2. GameManager.cs
+
+   ```cs
+   public class GameManager : MonoBehaviour
+   {
+       public float level(int score){
+           int defaultSpeed = -5;
+           int increSpeed = (score * -1) / 100;
+           if(increSpeed < -5){
+               increSpeed = -5;
+           }
+
+           return defaultSpeed+increSpeed;
+       }
+   }
+   ```
+
+3. GameManager객체에 컴포넌트를 추가해주고
+4. ~~Tool > Bolt > Update Unit Option 실행~~
+5. Edit > Project Setting > Visual Scripting >
+   1. Regenerate Nodes (가로로 긴버튼) 클릭
+6. 새로운 유닛 추가
+   1. GameManager > Game manager > level
+   2. ![[Pasted image 20240728211514.png]]
+   3. GameManager 의 Scoring 뒤에 붙여준다.
+7. 테스트
+
+### https://www.youtube.com/watch?v=W0Tf8DuMwbQ&list=PLO-mt5Iu5TeaMl--ItJ2so8BitO_BfTIz&index=7&pp=iAQB 차례
