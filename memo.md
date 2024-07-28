@@ -322,4 +322,109 @@ https://www.youtube.com/playlist?list=PLO-mt5Iu5TeaMl--ItJ2so8BitO_BfTIz
 2. if문을 가져와서 연결
 3. ![[Pasted image 20240728111053.png]]
 
+### 공룡 런게임 - 점수 시스템 구현 [V05]
+
+#### 점수 계산
+
+1. 게임 매니저 오브젝트를 만들어준다.
+2. script machine을 추가해준다. (GameManager.asset)
+3. deltaTime을 5배해주고
+4. GameTime이라는 변수를 생성해준다.(float)
+5. _컴포넌트에 있는 variables에서 변수를 만들면 object급의 변수가 만들어진다._
+6. ![[Pasted image 20240728112447.png]]
+7. 점수 변수를 만들것인데
+8. 다른 오브젝트에서도 사용가능해야하기 때문에 scene급에서 변수를 만들어준다.
+9. Score (Integer)
+10. ![[Pasted image 20240728114550.png]]
+
+#### UI 만들기
+
+1. 캔버스 > text 추가
+2. Canvas > Render Mode
+   1. overlay에서 Camera로 변경
+   2. 아래에 Render Camera가 생기는데
+      1. main camera를 드래그해서 넣어준다.
+3. Text
+   1. 앵커 우상단
+   2. 라벨 0000
+   3. font 70
+   4. bold
+   5. overflow, overflow
+   6. 중앙정렬, 중앙정렬
+   7. 색상 하얀색
+4. Text -animator
+   1. 에 쓸 ScoreText 라는 animator 하나와
+   2. animation(Check)를 추가해준다.
+   3. doCheck라는 파라미터를 추가
+   4. Empty State추가
+   5. Empty > Check 의 컨디션을 넣어주고
+   6. Exit time 비활성화
+   7. transition 0
+   8. 양방향 duration 0
+   9. 돌아갈때는
+      1. Has Exit time 체크
+      2. ,transition 0.25
+5. Check animation 내에서
+   1. Scale property를 추가해주고
+   2. 10프레임부터 50프레임까지 scale을 1.3으로 잡아준다.
+   3. 0과 60은 scale 1
+
+#### 점수표시
+
+1. Text에 State Machine을 추가해준다.
+2. Score라는 매크로(graph)를 만들어준다.
+3. (State Machine)은 아이콘이 조금 다름
+4. 스테이트 유닛 : 머신의 상태에 따라 실행되는 유닛
+5. Flow machine(Script machine)을 감싸고 있는 하나의 큰 카테고리
+6. Start 라고 써잇는 부분을 (graph inspector) 에서 이름을 편집하여
+7. Scoring이라고 이름을 바꿔준다.
+8. State 유닛 더블릭클릭으로 들어가기
+9. set Text 검새해서 유닛 추가
+   1. string을 매개변수로받기에
+   2. format 필요
+10. string format 유닛 추가
+11. ![[Pasted image 20240728133326.png]]
+
+#### 점수 표시
+
+1. Text 객체내에
+2. Object 단위로 NextCheck라는 int형 변수 만들어주기
+3. 100점 씩 체크 포인트를 만들것이기에
+4. 초기값을 100을 넣어준다.
+5. NextCheck 의 값을 가져오는 유닛 추가
+6. Equal 유닛 추가
+   1. Equal은 기본값이 객체비교이기에
+   2. graph inspector에 가서 Numeric을 체크해준다.
+7. 만약에 score와 nextCheck가 같다면 nextcheck +=100을 해주는 로직을 만든다.
+8. ![[Pasted image 20240728134723.png]]
+9. 다시 Score State machine까지 가서
+10. Scoring이 보이는 곳까지가서
+11. 우클릭하여 create script state 눌러준다.
+    1. Title Checking
+    2. On Enter State 제외 삭제
+       1. 코딩할때는 없었던
+       2. 스테이트 유닛에 진입할 때 실행되는 유닛
+    3. ![[Pasted image 20240728142110.png]]
+12. Scoring 에서 make transition을 하여 Checking으로 연결
+    1. ![[Pasted image 20240728142304.png]]
+13. 노란색 (No Event)를 클릭하여 들어가보면
+14. Trigger Transition : 상태 변경을 위해 컨트롤을 받는 유닛
+15. Events > UnityEvent 유닛을 추가하여
+    1. Check라고 이름을 지어준다.
+    2. ![[Pasted image 20240728142518.png]]
+16. 다시 Scoring 내로 들어가서
+17. trigger event를 검색하면
+    1. script 관련이잇고
+    2. state 관련이 잇다.
+    3. 현재는 state 관련을 써야한다.
+    4. ![[Pasted image 20240728142710.png]]
+18. 문제
+    1. Scoring에서 Checking으로 편도 방향이다.
+19. animator 내에 check animation으로가서 40프레임쯤에 add event로 이벤트를 추가해준다.
+    1. 이제 inspector 창에 가서
+    2. state machine > methods > TriggerAnimationEvent라는 것이 있음
+    3. String 에 "Score" 를 적어준뒤
+    4. State Machine으로 돌아와서
+20. 돌아가는 transition 만들어준뒤 6. 돌아가는 event 내에서 7. Events > Animation > Named Anim Event 추가 8. ![[Pasted image 20240728143831.png]] 9.
+
 ###
