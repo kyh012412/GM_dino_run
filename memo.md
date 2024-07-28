@@ -216,4 +216,110 @@ https://www.youtube.com/playlist?list=PLO-mt5Iu5TeaMl--ItJ2so8BitO_BfTIz
 12. 마운틴 그룹은 동일하지만 스피드를 0.1을 준다.
 13. _패럴랙스 : 거리에 따라 속도를 달리하여 원근감을 주는 기술_
 
+### 공룡 런게임 - 🚧장애물 만들기 [V04]
+
+#### 중복 그래프
+
+1. Scrolling.asset을 다른곳에서도 사용할수 있게 만들기
+2. Update와 speed 를 지워준다.
+3. add node
+   1. nesting > input
+4. inpuy node를 클릭한상태에서
+   1. ![[Pasted image 20240727171808.png]]
+5. 느낌표를 눌러서 graph inspector를 열어준다.
+   1. Control input = (Trigger Inputs)
+   2. Value Inputs = Data Inputs
+6. Input 유닛 : 유닛 진입에 필요한 컨트롤, 데이터를 정하는 유닛
+7. ![[Pasted image 20240727173156.png]]
+8. ![[Pasted image 20240727173206.png]]
+9. 슈퍼 유닛 : 다른 그래프 내부에 사용하기 위한 매크로
+10. 이제 Scrolling은 슈퍼 유닛이 되었음
+11. 그라운드 그룹으로 이동
+12. ![[Pasted image 20240727173355.png]]
+13. 이렇게 남기고 다 지운뒤
+14. Scrolling 매크로를 넣어준다.
+15. ![[Pasted image 20240727173616.png]]
+16. 연결
+17. 이하 다른 그룹들도 동일하게 만들어준다.
+18. 슈퍼 유닛으로 메모리 절약과 체계적인 유지보수 가능
+
+#### 슈퍼 유닛 활용
+
+1. resposition.asset
+2. ![[Pasted image 20240727173948.png]]
+3. 도 다른곳에서 추후에 활용하기를 원함 (선인장 등)
+4. 에셋 창에서 새롭게 Script machine을 만들어준다.
+5. reposition에서 update를 제외한 모든것을 ctrl + x로 잘라내서
+6. 새 매크로에 붙여넣기
+7. 동일하게 input 유닛만들어주기
+   1. 이름 in
+   2. hide label 체크
+8. 추가적으로 nesting > output을 추가해준다.
+9. _output 유닛 추가하여 컨트롤이 끝나는 지점에 연결_
+10. ![[Pasted image 20240727174510.png]]
+11. 다시 reposition.asset내부에서 다시 연결해준다.
+12. ![[Pasted image 20240727174618.png]]
+13. 로직이 잘렸던 기존 매크로에 슈퍼 유닛을 붙여서 복원
+14. 테스트
+    1. ok
+
+#### 장애물 만들기
+
+1. 장애물도 Ground Group 내에 추가예정
+2. 3종류 의 스프라이트를 각각 객체로 만들어준다.
+   1. A,B,C의 위치를 22 30 38로 해준다.
+   2. Cactus A
+      1. x위치 1
+      2. Box collider 2d
+         1. size
+            1. x 0.6
+            2. y 1
+   3. Cactus B
+      1. x 위치 9
+      2. BoxCollider 2d
+         1. size
+         2. size
+            1. x 1.1
+            2. y 0.7
+   4. Cactus C
+      1. x 위치 17
+      2. _복잡한 문양의 collider를따는방법_
+      3. Polygon Collider 2d
+      4. 폴리곤 콜라이더는 연산량이 커서 많이 사용하지 않도록 주의
+   5. Cactus 에 script machine을 추가해준다.
+   6. graph(macro)에서 Cactus.asset을 만들어 준다.
+   7. move side를 추가해주고
+   8. 새 노드 추가
+      1. ran 검새긍로
+      2. Random.Range 유닛을 추가
+         1. 매개변수 자료형이 int 인것으로 선택
+   9. equal 노드 추가
+      1. graph inspector에서 numeric을 체크
+   10. sprite renderer set enable 검색 후 노드추가
+   11.
+   12. box collider 2d와 polygon collider 2d를 같이 쓸수있게
+       1. Collider 2d set enabled를 노드를 추가해준다.
+   13. 연결
+       1. ![[Pasted image 20240728104527.png]]
+
+#### 충돌 이벤트
+
+1. Player의 scriptr machine 내에서
+   1. Events > Physics 2d > on trigger enter 2d 로 노드 추가
+   2. 충돌 로직은 추후에
+   3. 현재는 검증용으로 debug log까지만
+2. debug log 노드추가
+3. string literal 추가
+4. 속도 가 느리므로 Scene 변수에 Speed를 -2~-5 (-5)로 변경
+5. 테스트
+   1. 정상작동
+   2. 추가 버그
+   3. 연속 점프가 가능한 상태
+
+##### 연속 점프 제어하기
+
+1. animator get bool과
+2. if문을 가져와서 연결
+3. ![[Pasted image 20240728111053.png]]
+
 ###
